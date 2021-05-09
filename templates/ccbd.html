@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <title>MAP GENERATOR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <style type="text/css">        
+       form{                
+            width:300px;
+            background-color:aqua; 
+            text-align: justify;               
+          } 
+      .submit{
+        margin-left:100px;
+      } 
+    </style>       
+  </head>
+  <body>          
+      <form>
+        <h2>MAP GENERATOR</h2>
+        <div>      
+            <p>ROWS:<input type="number" placeholder="Enter number of rows"></p>          
+            <p>COLUMNS:<input type="number" placeholder="Enter number of columns"></p>          
+            <p>NOISE:<input type="number" placeholder="Enter the gaussian noise value"></p>          
+            <p>SEED:<input type="number" placeholder="Set the seed"></p>          
+            <p>OCEAN:<input type="number" placeholder=""></p>   
+            <p>UPLOAD HEXAGON FILE:<br><input type="file"></p>
+            <p>UPLOAD COLORED_WO_OCEAN_FILE:<br><input type="file"></p> 
+            <p>UPLOAD COLORED_W_OCEAN_FILE:<br><input type="file">
+            </p>
+            <p>WKT_FILE:<br><input type="file"></p>
+          </div>
+       
+          <div>
+            <h3>SET THE DISTRIBUTION</h3>
+            <p>Grasslands:<input type="number"></p>
+            <p>Oceans:<input type="number"></p>
+            <p>Buildings/Dessert:<input type="number"></p>
+            <p>Forests:<input type="number"></p>
+          </div>
+          <div>         
+          <p class="submit"><input type="submit" value="generate"
+            formmethod="post"></p>
+        </div>      
+      </form>      
+  </body>
+</html>
