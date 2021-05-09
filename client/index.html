@@ -3,9 +3,9 @@
   <head>
     <title>MAP GENERATOR</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-    <link rel="stylesheet" href="static/style.css">
+    <link rel="stylesheet" href="../style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="static/index.js" > </script>
+    <script src="../index.js" > </script>
   </head>
   <body>
     <div class="container">
@@ -14,65 +14,63 @@
           <h2>MAP GENERATOR</h2>
           <p>
               <label for="rows">Rows:</label>
-              <input type="number" id="rows" value="10">
+              <input type="number" id="rows">
           </p>
           <p>
               <label for="cols">Columns:</label>
-              <input type="number" id="cols" value="10">
+              <input type="number" id="cols">
           </p>
           <p>
               <label for="noise">Noise:</label>
-              <input type="number" placeholder="" id="noise" value="0.03">
+              <input type="number" placeholder="" id="noise">
               <!-- <label>Seed:</label><input type="number" placeholder="Set the seed"> -->
             </p>
             <p>
               <label for="ocean">Ocean:</label>
-              <input type="checkbox" placeholder="" id="ocean" value="0" onclick=oncheck(this)>
+              <input type="checkbox" placeholder="" id="ocean" value="0" onclick=oncheck(this) >
             </p>
             <p>
               <label for="hex">Filename for hexagonal grid:</label>
-              <input type="text" id="hex" value="test_hex.png">
+              <input type="text" id="hex">
             </p>
             <p>
               <label for="map">Filename for map:</label>
-              <input type="text" id="map" value="test_map.png">
+              <input type="text" id="map">
             </p>
             <p>
               <label for="wkt">Filename for wkt ouput:</label>
-              <input type="text" id="wkt" value="test_wkt.txt">
+              <input type="text" id="wkt">
             </p>
 
               <h3>SET THE DISTRIBUTION</h3>
             <p>
               <label for="grassland">Grasslands:</label>
-              <input type="number" id="grassland" value="0.4">
+              <input type="number" id="grassland">
             </p>
             <p>
               <label for="dessert">Dessert:</label>
-              <input type="number" id="dessert" value="0.25">
+              <input type="number" id="dessert">
             </p>
             <p>
               <label for="forest">Forests:</label>
-              <input type="number" id="forest" value="0.15">
+              <input type="number" id="forest">
             </p>
             <p>
               <label for="water">Waterbody:</label>
-              <input type="number" id="water" value="0.05">
+              <input type="number" id="water">
             </p>
             <p>
               <label for="mountain">Mountains:</label>
-              <input type="number" id="mountain" value="0.15">
+              <input type="number" id="mountain">
             </p>
             <p>
             </p>
         </form>
-        <p class="submit">
-          <button id="setParams" onclick=submit()>Set Params</button>
-          <button id="generate" onclick=generate()>Generate</button>
-        </p>
+        <p class="submit"><button id="setParams" onclick=submit()>Set Params</button>
+        <button id="generate" onclick=generate()>Generate</button></p>
       </div>
       <div class="image">
-        {% block image %} {% endblock %}
+        <img src="../images/test.png" class="image-window">
       </div>
     </div>
   </body>
