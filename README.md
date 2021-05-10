@@ -1,6 +1,7 @@
 # MapGenerator
 
 Flask App for generating random terrains/maps with multiple variable parameters.
+![Screenshot_20210510_110258](https://user-images.githubusercontent.com/33174957/117610480-73ff3480-b17f-11eb-9bd2-8cdcae27473e.png)
 
 ### How to install
 
