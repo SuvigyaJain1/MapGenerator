@@ -1,8 +1,8 @@
-let submit = () => {
+ let submit = () => {
     let ROWS=Number(document.getElementById('rows').value)
     let COLS=Number(document.getElementById('cols').value)
     let NOISE=Number(document.getElementById('noise').value)
-    let OCEAN=Number(document.getElementById('ocean').value)
+    let OCEAN=Number(document.getElementById('ocean').checked)
     let HEXAGON_FILE=document.getElementById('hex').value
     let COLORED_W_OCEAN_FILE=document.getElementById('map').value
     let WKT_FILE=document.getElementById('wkt').value
@@ -17,8 +17,8 @@ let submit = () => {
     ]
 
     let sum=0.0
-    DISTRIBUTION.forEach(e => {
-        sum += e
+    DISTRIBUTION.forEach(el => {
+        sum = sum + el
     })
     if(sum !== 1) DISTRIBUTION = null
 
@@ -55,9 +55,4 @@ let generate = () => {
         location.reload()
         }
     )
-}
-
-let oncheck = (el) =>{
-    if(el.value === '0') el.value = '1'
-    else el.value = '0'
 }

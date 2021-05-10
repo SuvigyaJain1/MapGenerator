@@ -1,62 +1,68 @@
 import sys
 import threading
 
-from flask import Flask, render_template, send_from_directory, request, redirect, jsonify, url_for
+from flask import Flask, render_template, send_from_directory, request, redirect, jsonify, url_for, session
+# from flask.ext.session import Session
 from flask_cors import CORS
 from main import hexagonal_lattice, displayMap, combine_polys, setBoundingOcean
 from shapely.geometry import Polygon, MultiPolygon
 from geovoronoi import voronoi_regions_from_coords
 import os
-
+from random import randint
 
 app = Flask(__name__)
+app.secret_key = str(randint(0,10000000))
+
+# SESSION_TYPE = 'redis'
+app.config.from_object(__name__)
+# Session(app)
 CORS(app)
 
-sys.setrecursionlimit(1 << 20)    # adjust numbers
-threading.stack_size(1 << 30)   # for your needs
+# sys.setrecursionlimit(1 << 20)    # adjust numbers
+# threading.stack_size(1 << 30)   # for your needs
 
 params = {
     'ROWS': 5,
     'COLS': 5,
     'NOISE': 0.03,
-    'OCEAN': 1,
+    'OCEAN': 0,
     'HEXAGON_FILE': "testing.png",
-    'COLORED_W_OCEAN_FILE': "test.png",
+    'COLORED_W_OCEAN_FILE': "test_hex.png",
     'WKT_FILE': "test.txt",
     'DISTRIBUTION': [0.40, 0.3, 0.05, 0, 0.1, 0.15],
 }
 
 
 def image_gen_main():
-    coords = hexagonal_lattice(params['ROWS'], params['COLS'], params['NOISE'])[:, :2]
+    coords = hexagonal_lattice(session['ROWS'], session['COLS'], session['NOISE'])[:, :2]
     x_min, x_max, y_min, y_max = coords[:, 0].min(), coords[:, 0].max(), coords[:, 1].min(), coords[:, 1].max()
     bounding_box = Polygon([(x_min, y_min), (x_min, y_max), (x_max, y_max), (x_max, y_min)])
     region_polys, _ = voronoi_regions_from_coords(coords, bounding_box)
     dirname = "/home/suvigya/PycharmProjects/MapGeneratorApp/images/"
 
     ocean = 0.07
-    if int(params['OCEAN']) == 0:
+    if int(session['OCEAN']) == 0:
         ocean = 0
 
-    displayMap(list(region_polys.values()), filename=dirname+params['HEXAGON_FILE'], bounds=bounding_box.bounds)
+    displayMap(list(region_polys.values()), filename=dirname+session['HEXAGON_FILE'], bounds=bounding_box.bounds)
 
     multi = []
     for poly in region_polys:
         multi.append(region_polys[poly])
 
     multi = MultiPolygon(multi)
-    cmap = combine_polys(multi, params['DISTRIBUTION'])
+    cmap = combine_polys(multi, session['DISTRIBUTION'])
 
     if ocean != 0:
         setBoundingOcean(multi, bounding_box.boundary,
                          bounds=(x_max, x_min), cmap=cmap,
-                         buffer=ocean, noise=float(params['NOISE']))
+                         buffer=ocean, noise=float(session['NOISE']))
     else:
         setBoundingOcean(multi, bounding_box.boundary, bounds=(x_max, x_min), cmap=cmap, buffer=0, noise=0.00)
 
-    displayMap(multi, fillcolors=cmap, filename=dirname+params['COLORED_W_OCEAN_FILE'], bounds=bounding_box.bounds)
+    displayMap(multi, fillcolors=cmap, filename=dirname+session['COLORED_W_OCEAN_FILE'], bounds=bounding_box.bounds)
 
-    with open(dirname+params['WKT_FILE'], "w") as fp:
+    with open(dirname+session['WKT_FILE'], "w") as fp:
         fp.write(multi.wkt)
     del multi, cmap, region_polys, coords,
 
@@ -68,33 +74,32 @@ def get_image(filename):
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html', img=url_for('get_image', filename=params['COLORED_W_OCEAN_FILE']))
+    for key in list(params.keys()):
+        if key not in session:
+            session[key] = params[key]
+    return render_template('index.html', img=url_for('get_image', filename=session['COLORED_W_OCEAN_FILE']))
 
 
 @app.route('/generate', methods=['POST'])
 def generate_images():
-    main_thread = threading.Thread(target=image_gen_main)
-    main_thread.start()
-    main_thread.join()
-    render_template('index.html', img=url_for('get_image', filename=params['COLORED_W_OCEAN_FILE']))
-    redirect('/')
+    # main_thread = threading.Thread(target=image_gen_main)
+    # main_thread.start()
+    # main_thread.join()
+    image_gen_main()
+    # render_template('index.html', img=url_for('get_image', filename=session['COLORED_W_OCEAN_FILE']))
+    # redirect('/')/')
     return jsonify(success="image successfully generated",
-                   image=params['COLORED_W_OCEAN_FILE'])
+                   image=session['COLORED_W_OCEAN_FILE'])
 
 
 @app.route('/setParams', methods=['POST'])
-def set_params():
+def set_session():
     # return request.form
-    for key in list(params.keys()):
+    for key in list(session.keys()):
         val = request.form.get(key)
         if val is not None:
-            params[key] = request.form[key]
-
-    # params['COLORED_W_OCEAN_FILE'] = os.path.join("images", params['COLORED_W_OCEAN_FILE'])
-    # params['WKT_FILE'] = os.path.join("images", params['WKT_FILE'])
-    # params['HEXAGON_FILE'] = os.path.join("images", params['HEXAGON_FILE'])
-
-    return jsonify(success="Updated params. Ready to generate image", params=params)
+            session[key] = request.form[key]
+    return jsonify(success="Updated session. Ready to generate image")
 
 
 if __name__ == 'main':
