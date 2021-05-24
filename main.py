@@ -116,6 +116,7 @@ biomes = ['grassland', 'building', 'waterbody', 'ocean', 'mountain', 'forest']
 
 
 def pick_biome(biomes, biome_dist):
+    # print("picked biome from ", biomes, "with dist as\n", biome_dist)
     return np.random.choice(biomes, p=biome_dist)
 
 

@@ -82,12 +82,7 @@ def index():
 
 @app.route('/generate', methods=['POST'])
 def generate_images():
-    # main_thread = threading.Thread(target=image_gen_main)
-    # main_thread.start()
-    # main_thread.join()
     image_gen_main()
-    # render_template('index.html', img=url_for('get_image', filename=session['COLORED_W_OCEAN_FILE']))
-    # redirect('/')/')
     return jsonify(success="image successfully generated",
                    image=session['COLORED_W_OCEAN_FILE'])
 
@@ -95,10 +90,11 @@ def generate_images():
 @app.route('/setParams', methods=['POST'])
 def set_session():
     # return request.form
-    for key in list(session.keys()):
+    for key in list(params.keys()):
         val = request.form.get(key)
         if val is not None:
-            session[key] = request.form[key]
+            session[key] = val
+    session['DISTRIBUTION'] = request.form.getlist('DISTRIBUTION[]')
     return jsonify(success="Updated session. Ready to generate image")
 
 

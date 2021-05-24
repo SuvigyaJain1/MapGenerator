@@ -20,7 +20,7 @@
     DISTRIBUTION.forEach(el => {
         sum = sum + el
     })
-    if(sum !== 1) DISTRIBUTION = null
+    if(sum != 1) DISTRIBUTION = null
 
     toSubmit = {
         'ROWS': ROWS,
